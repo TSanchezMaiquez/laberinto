@@ -1,25 +1,26 @@
-package Classes;
+package classes;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Maze {
 
 	private char [][] map;
-	private String filename;
 	private boolean loaded;
-	private int startI, startJ, endI,endJ;
-	private ArrayList<Coordinate>path = new ArrayList <Coordinate>();
+	private int startI;
+	private int startJ;
+	private int endI;
+	private int endJ;
+	private ArrayList<Coordinate>path = new ArrayList <>();
 	private boolean cheekingES;
 	
 	public Maze(){
 		this.loaded =false;
 		this.cheekingES=false;
 	}	
-public void loadMaze() throws InterruptedException, IOException {
+public void loadMaze() throws InterruptedException {
 	
 	System.out.println();
 	File f = new File(Config.MAZES_PATH);
@@ -30,9 +31,9 @@ public void loadMaze() throws InterruptedException, IOException {
 		this.chooseMaze(pathnames);
 	}
 }	
-private void chooseMaze(String [] pathnames) throws InterruptedException, IOException {
+private void chooseMaze(String [] pathnames) throws InterruptedException {
 	this.cheekingES=false;
-    int num=0;
+    int num=0; 
     System.out.println();
     System.out.print("Los laberintos estan ordenados por tama\u00f1o.\n");
     System.out.println();
@@ -50,7 +51,6 @@ private void chooseMaze(String [] pathnames) throws InterruptedException, IOExce
    
      if(num>0 && num<=pathnames.length) {
     	 
-    	 this.filename = Config.MAZES_PATH + pathnames[num-1];
     	 	System.out.println("\nCargando el laberinto en el programa...");
     	    Thread.sleep(900);
     	     
@@ -58,15 +58,15 @@ private void chooseMaze(String [] pathnames) throws InterruptedException, IOExce
     	     System.out.println("Laberinto cargado\n");
     	     Thread.sleep(900);
     	     
-    	     this.saveMaze(this.filename);
+    	     this.saveMaze(Config.MAZES_PATH + pathnames[num-1]);
      	}else {
      		if(num==0){
      			System.err.println("\nHas decidido salir sin elegir laberinto");
-     			return;
+     			
      			}
      		else {
      			System.err.println("\nEl numero introducido no es valido");
-     			return;
+     			
      		}
      	}
 	}
@@ -84,7 +84,7 @@ private void saveMaze (String route) {
 	this.loaded=true;
 }
 private ArrayList<String> readAllLines(String route){
-	ArrayList<String> allLines = new ArrayList<String>();
+	ArrayList<String> allLines = new ArrayList<>();
 	
 	 try {
 	      File myObj = new File(route);
@@ -116,7 +116,7 @@ public void showMap() throws InterruptedException {
 	System.out.println("Laberinto cargado\n");
 	}else {
 		System.err.println("\nPrimero debe elegir un laberinto para mostrarlo");
-		return;
+		
 	}
 }
 private void upNumbers() {
@@ -143,23 +143,21 @@ private void upNumbers() {
 } 
 private void leftNumbers() {
 	
-	String drawing ="";
-	for(int i=0; i<this.map.length; i++) {
-		if(i<=9 && i>0) {
-		drawing+="0"+(i)+ " ";
-			}
-		else if(i==0 | i== this.map.length-1) {
-			drawing+="   ";
-		}
-		else {
-			drawing+=(i)+" ";
-		}
-		for(int j=0; j<this.map[0].length; j++) {
-			drawing+=""+this.map[i][j]+ " ";
-		}
-		drawing+="\n";
-	}
-	System.out.println(drawing);
+	   StringBuilder drawing = new StringBuilder();
+	    for (int i = 0; i < this.map.length; i++) {
+	        if (i <= 9 && i > 0) {
+	            drawing.append("0").append(i).append(" ");
+	        } else if (i == 0 || i == this.map.length - 1) {
+	            drawing.append("   ");
+	        } else {
+	            drawing.append(i).append(" ");
+	        }
+	        for (int j = 0; j < this.map[0].length; j++) {
+	            drawing.append(this.map[i][j]).append(" ");
+	        }
+	        drawing.append("\n");
+	    }
+	    System.out.println(drawing.toString());
 }
 public void setEntranceExit() {
 	
@@ -182,7 +180,7 @@ public void setEntranceExit() {
 			}
 	}else {
 		System.err.println("\nPrimero debe elegir un laberinto para mostrarlo");
-		return;
+		
 		}
 	}
 private boolean checkData(int startOne, int startTwo, int endOne, int endTwo) {
@@ -222,15 +220,13 @@ public void seekingWays() throws InterruptedException {
 			}
 		}else if(option==2) {
 			System.err.println("Ups, me gustaría pero va a ser que hoy no.\n");
-			return;
-		}else {
-			return;
+			
 		}
 	}
 	
 	else {
 		System.err.println("\n\nAntes debes seleccionar laberinto e introducir coordenadas de entrada y salida");
-		return;
+		
 		}
 	}
 private void showTheWay() throws InterruptedException {
@@ -283,10 +279,10 @@ private boolean firstWay() {
 	
 	 this.path = new ArrayList<>();
      boolean[][] visited = new boolean[map.length][map[0].length];
-     boolean found =dfs(startI, startJ, path, visited);
+    
     
 	
-	return found;
+	 return dfs(startI, startJ, path, visited);
 }
 private boolean dfs(int i, int j, ArrayList<Coordinate> path, boolean[][] visited) {
     // Si llegamos al final, encontramos una solución

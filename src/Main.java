@@ -1,15 +1,16 @@
-/**
- * Main.java
+
+/* Main.java
+
  * Programa principal del sistema para resolver un laberinto
  * TSM - 2023.01.11
- * version 0.1.0
+ * version 1.1.0
  */
 import java.io.IOException;
 
-import Classes.Config;
-import Classes.Interface;
-import Classes.Maze;
-import Classes.Session;
+import classes.Config;
+import classes.Interface;
+import classes.Maze;
+import classes.Session;
 
 public class Main {
 	
