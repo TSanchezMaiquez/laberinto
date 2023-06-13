@@ -2,6 +2,7 @@ package Classes;
 
 public class User {
 	//Propiedades
+	public String id;
 	public String username;
 	public String name;
 	public String nif;

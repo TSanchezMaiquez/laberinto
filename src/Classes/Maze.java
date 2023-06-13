@@ -12,10 +12,12 @@ public class Maze {
 	private String filename;
 	private boolean loaded;
 	private int startI, startJ, endI,endJ;
-	//private ArrayList>Coordinate>path 
+	private ArrayList<Coordinate>path = new ArrayList <Coordinate>();
+	private boolean cheekingES;
 	
 	public Maze(){
 		this.loaded =false;
+		this.cheekingES=false;
 	}	
 public void loadMaze() throws InterruptedException, IOException {
 	
@@ -29,7 +31,7 @@ public void loadMaze() throws InterruptedException, IOException {
 	}
 }	
 private void chooseMaze(String [] pathnames) throws InterruptedException, IOException {
-  
+	this.cheekingES=false;
     int num=0;
     System.out.println();
     System.out.print("Los laberintos estan ordenados por tama\u00f1o.\n");
@@ -76,10 +78,7 @@ private void saveMaze (String route) {
 		String currentLine= lines.get(i);
 		
 		for(int j=0; j<currentLine.length(); j++) {
-			/*if(this.map[i][j]=='E' || this.map[i][j]== 'S' ) {
-				this.map[i][j]=' ';
-			}*/
-		this.map[i][j]=currentLine.charAt(j);
+			this.map[i][j]=currentLine.charAt(j);
 		}
 	}
 	this.loaded=true;
@@ -190,18 +189,141 @@ private boolean checkData(int startOne, int startTwo, int endOne, int endTwo) {
 	
 	if(startOne>0 && startOne <this.map.length && startTwo>0 && startTwo <this.map[0].length && endOne >0 && 
 					endOne<this.map.length && endTwo >0 && endTwo< this.map[0].length && (startOne !=endOne || startTwo !=endTwo) 
-					&& map[startOne][startTwo]==' ' && map[endOne][endTwo]==' '){
+					&& map[startOne][startTwo]!='#' && map[endOne][endTwo]!='#'){
 
 		for(int i=0; i<map.length; i++) {
 			for (int j = 0; j < map[0].length; j++) {
-				if(this.map[i][j]=='E' || this.map[i][j]== 'S' ) {
+				if(this.map[i][j]=='E' || this.map[i][j]== 'S' || map[i][j]=='^' || map[i][j]=='V' || map[i][j]=='<'  || map[i][j]=='>' ) {
 					this.map[i][j]=' ';
 				}
 			}
 		}
 		map[startOne][startTwo]='E';
 		map[endOne][endTwo]='S';
+		this.cheekingES=true;
 		return true;
 	}else return false;
+	}
+public void seekingWays() throws InterruptedException {
+
+	
+	if(this.cheekingES) {
+		
+		System.out.print(Config.SEEKING_A_PATH);
+		int option = Interface.getInt();
+		System.out.println();
+		if(option==1) {
+			if(this.firstWay()) {
+				System.out.println("Camino encontrado\nMostrando el camino:\n");
+				 Thread.sleep(900);
+				showTheWay();
+			}else {
+				System.out.println("Camino no encontrado");
+			}
+		}else if(option==2) {
+			System.err.println("Ups, me gustaría pero va a ser que hoy no.\n");
+			return;
+		}else {
+			return;
+		}
+	}
+	
+	else {
+		System.err.println("\n\nAntes debes seleccionar laberinto e introducir coordenadas de entrada y salida");
+		return;
+		}
+	}
+private void showTheWay() throws InterruptedException {
+	for (int i = 0; i < map.length; i++) {
+		for (int j = 0; j < map.length; j++) {
+			if(map[i][j]=='^' ||map[i][j]=='V' || map[i][j]=='<' || map[i][j]=='>' ) {
+				map[i][j]=' ';
+			}
+		}
+	}
+	for (int i = path.size()-1; i >= 0; i--) {
+		if(i==path.size()-1) {
+			continue;
+		}else {
+		if(path.get(i).direction==1) {
+			this.map[path.get(i).i][path.get(i).j]='V';
+		}else if(path.get(i).direction==2) {
+			this.map[path.get(i).i][path.get(i).j]='^';
+		}else if(path.get(i).direction==3) {
+			this.map[path.get(i).i][path.get(i).j]='>';
+		}else {
+			this.map[path.get(i).i][path.get(i).j]='<';
+			}
+		}
+	}
+	showMap();
+	
+	
+	for (int i = path.size()-1; i >= 0; i--) {
+		if(i==path.size()-1) {
+			System.out.println("("+ startI+ ", "+ startJ + ") Entrada");
+		}else {
+		if(path.get(i).direction==1) {
+			System.out.println("("+ path.get(i).i+ ", "+ path.get(i).j + ") Abajo");
+		}else if(path.get(i).direction==2) {
+			System.out.println("("+ path.get(i).i+ ", "+ path.get(i).j + ") Arriba");
+		}else if(path.get(i).direction==3) {
+			System.out.println("("+ path.get(i).i+ ", "+ path.get(i).j + ") Derecha");
+		}else {
+			System.out.println("("+ path.get(i).i+ ", "+ path.get(i).j + ") Izquierda");
+			}
+		}
+	}
+	System.out.println("("+ endI+ ", "+ endJ + ") Salida");
+	System.out.println("\nDesplazamientos totales: "+ path.size());
+
+       
+}
+private boolean firstWay() {
+	
+	 this.path = new ArrayList<>();
+     boolean[][] visited = new boolean[map.length][map[0].length];
+     boolean found =dfs(startI, startJ, path, visited);
+    
+	
+	return found;
+}
+private boolean dfs(int i, int j, ArrayList<Coordinate> path, boolean[][] visited) {
+    // Si llegamos al final, encontramos una solución
+    if (i == endI && j == endJ) {
+        return true;
+    	}
+    
+    // Si estamos en una pared o ya visitamos esta casilla, no continuamos
+    if (map[i][j] == '#' || visited[i][j]) {
+        return false;
+    	}
+
+    // Marcamos la casilla como visitada
+    visited[i][j] = true;
+
+    // Probamos con cada dirección
+    if (dfs(i + 1, j, path, visited)) {
+        path.add(new Coordinate(i, j, 1)); //abajo
+        return true;
+    	}
+
+    if (dfs(i - 1, j, path, visited)) {
+        path.add(new Coordinate(i, j, 2)); //arriba
+        return true;
+    	}
+
+    if (dfs(i, j + 1, path, visited)) {
+        path.add(new Coordinate(i, j, 3)); //derecha
+        return true;
+    	}
+
+    if (dfs(i, j - 1, path, visited)) {
+        path.add(new Coordinate(i, j, 4)); //izquierda
+        return true;
+    	}
+
+    // Si no encontramos una solución en esta casilla, retrocedemos
+    return false;
 	}
 }

@@ -68,7 +68,7 @@ public class Main {
 			maze.setEntranceExit();
 			break;
 		case 4:
-			System.out.println("Proximamente");
+			maze.seekingWays();
 			break;
 		case 5:
 			userSession.showUser();
