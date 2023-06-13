@@ -16,10 +16,13 @@ public class Maze {
 	private ArrayList<Coordinate>path = new ArrayList <>();
 	private boolean cheekingES;
 	
+	
 	public Maze(){
 		this.loaded =false;
 		this.cheekingES=false;
-	}	
+		
+	}
+
 public void loadMaze() throws InterruptedException {
 	
 	System.out.println();
@@ -27,8 +30,10 @@ public void loadMaze() throws InterruptedException {
 	String[] pathnames = f.list();
 	if(pathnames.length==0 | pathnames == null) {
 		System.err.println("No hay laberintos para elegir");
+		
 	}else {
 		this.chooseMaze(pathnames);
+		
 	}
 }	
 private void chooseMaze(String [] pathnames) throws InterruptedException {
@@ -46,23 +51,21 @@ private void chooseMaze(String [] pathnames) throws InterruptedException {
         System.out.println("0 Cancelar");
         System.out.println();
         System.out.print("Elige uno: ");
-        num = Interface.getInt();
-       	
+        num = Interface.getInt();	
    
      if(num>0 && num<=pathnames.length) {
-    	 
     	 	System.out.println("\nCargando el laberinto en el programa...");
     	    Thread.sleep(900);
     	     
+    	     
+    	     this.saveMaze(Config.MAZES_PATH + pathnames[num-1]);
     	     System.out.println();
     	     System.out.println("Laberinto cargado\n");
     	     Thread.sleep(900);
-    	     
-    	     this.saveMaze(Config.MAZES_PATH + pathnames[num-1]);
+    	     Log.write("Laberinto cargado", pathnames[num-1]);
      	}else {
      		if(num==0){
      			System.err.println("\nHas decidido salir sin elegir laberinto");
-     			
      			}
      		else {
      			System.err.println("\nEl numero introducido no es valido");
@@ -96,6 +99,7 @@ private ArrayList<String> readAllLines(String route){
 	      myReader.close();
 	    } catch (FileNotFoundException e) {
 	      System.out.println("Ha ocurrido un error.");
+	      Log.write("Error guardando laberinto seleccionado ", "Sistema");
 	      e.printStackTrace();
 	    }
 	return allLines;
@@ -173,10 +177,14 @@ public void setEntranceExit() {
 		this.endJ=Interface.getInt();
 		System.out.println();
 		
+		String coordinates= "("+this.startI +", "+ this.startJ+")"+"("+this.endI+", "+this.endJ+")";
+		
 		if(checkData(this.startI, this.startJ, this.endI, this.endJ)) {
+			Log.write("Coordenadas correctas", coordinates);
 			System.out.println("Coordenadas correctas");
 		}else {
 			System.err.println("Las coordenadas introducidos no son validas");
+			Log.write("Coordenadas incorrectas", coordinates);
 			}
 	}else {
 		System.err.println("\nPrimero debe elegir un laberinto para mostrarlo");
@@ -203,7 +211,7 @@ private boolean checkData(int startOne, int startTwo, int endOne, int endTwo) {
 	}else return false;
 	}
 public void seekingWays() throws InterruptedException {
-
+	Log.write("Acceso a seekingWays()", "");
 	
 	if(this.cheekingES) {
 		
@@ -212,11 +220,13 @@ public void seekingWays() throws InterruptedException {
 		System.out.println();
 		if(option==1) {
 			if(this.firstWay()) {
+				Log.write("Primero camino encontrado", "Ha dado "+this.path.size()+ " pasos");
 				System.out.println("Camino encontrado\nMostrando el camino:\n");
 				 Thread.sleep(900);
 				showTheWay();
 			}else {
 				System.out.println("Camino no encontrado");
+				Log.write("error buscando camino en el laberinto", "Sistema");
 			}
 		}else if(option==2) {
 			System.err.println("Ups, me gustaría pero va a ser que hoy no.\n");
@@ -237,10 +247,8 @@ private void showTheWay() throws InterruptedException {
 			}
 		}
 	}
-	for (int i = path.size()-1; i >= 0; i--) {
-		if(i==path.size()-1) {
-			continue;
-		}else {
+	for (int i = path.size()-2; i >= 0; i--) {
+		
 		if(path.get(i).direction==1) {
 			this.map[path.get(i).i][path.get(i).j]='V';
 		}else if(path.get(i).direction==2) {
@@ -250,7 +258,7 @@ private void showTheWay() throws InterruptedException {
 		}else {
 			this.map[path.get(i).i][path.get(i).j]='<';
 			}
-		}
+		
 	}
 	showMap();
 	
