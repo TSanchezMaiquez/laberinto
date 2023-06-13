@@ -55,7 +55,7 @@ public class Session {
 			System.out.println("Inicio de sesion correcto");
 			
 		}else {
-			System.err.println ("\nUsuario y/o password incorrecto");
+			System.out.println ("\nUsuario y/o password incorrecto");
 		}
 	}
 	
@@ -82,15 +82,15 @@ public class Session {
 		
 		String username = Interface.getString("Nombre de usuario: ");
 		if(username.length()==0) {
-			System.err.println("El nombre de usuario no debe estar vacio\n");
+			System.out.println("El nombre de usuario no debe estar vacio\n");
 			return;
 		}
 		if(this.checkUser(username)) {
-			System.err.println("\nEl usuario ya existe\n");
+			System.out.println("\nEl usuario ya existe\n");
 			return;
 		}
 		
-		String password = Interface.getString("Introduce contraseña: ");
+		String password = Interface.getString("Introduce contrase\u00f1a: ");
 		String name = Interface.getString("Introduce nombre completo: ");
 		String nif =Interface.getString("Introduce nif: ");
 		String email =Interface.getString("Introduce email: ");
@@ -106,7 +106,7 @@ public class Session {
 		      System.out.println("Ha ocurrido un error.");
 		      e.printStackTrace();
 		    }
-		 System.out.println("Usuario guardado con exito\n\n");
+		 System.out.println("Usuario guardado con exito");
 		
 	}
 	private boolean checkUser(String username) {

@@ -4,25 +4,31 @@
  * TSM - 2023.01.11
  * version 0.1.0
  */
+import java.io.IOException;
+
 import Classes.Config;
 import Classes.Interface;
+import Classes.Maze;
 import Classes.Session;
 
 public class Main {
 	
 	public static Session userSession = new Session();
+	public static Maze maze = new Maze();
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException, IOException {
 		
 		System.out.println(Config.WELCOME);
 		
 		int option;
 		do {
 			if(userSession.isLogged()) {
-			option = Interface.getInt(Config.LOGGED_MENU);
+			option = Interface.getInt("\n"+Config.LOGGED_MENU);
+			System.out.println();
 			loggedAction(option);
 			}else {
-			option = Interface.getInt(Config.UNLOGGED_MENU);
+			option = Interface.getInt("\n"+Config.UNLOGGED_MENU);
+			System.out.println();
 			unloggedAction(option);
 			}
 			
@@ -46,19 +52,20 @@ public class Main {
 		}
 		
 	}
-	public static void loggedAction (int option) {
+	public static void loggedAction (int option) throws InterruptedException, IOException {
 		switch(option) {
 		
 		case 1:
-			System.out.println("Proximamente");
+			maze.loadMaze();
+			System.out.println();
 			break;
 			
 		case 2:
-			System.out.println("Proximamente");
+			maze.showMap();
 			break;
 		
 		case 3:
-			System.out.println("Proximamente");
+			maze.setEntranceExit();
 			break;
 		case 4:
 			System.out.println("Proximamente");
@@ -69,6 +76,7 @@ public class Main {
 		case 6:
 			userSession.logout();
 			System.out.println("Has decidido cerrar sesion. Hasta la proxima");
+			maze = new Maze();
 			break;
 		}
 		
